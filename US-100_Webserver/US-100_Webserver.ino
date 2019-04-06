@@ -124,6 +124,8 @@ void loop() {
 
 
 void readSensor() {
+    temperature = -99;
+    distance = -99;
 
     US100.flush(); 
     US100.write(0x55); // Read distance
