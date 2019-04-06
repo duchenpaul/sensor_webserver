@@ -95,29 +95,18 @@ void loop() {
         char c = client.read();
         Serial.println("Client read");
         
-        // if (c == '\n' && blank_line) {
-        if (1 == 1) {
-            delay(100);
-            readSensor();
-            String ptr = "";
-            ptr += "{\"distance\":";
-            ptr += distance;
-            ptr += ",\"Temperature\":";
-            ptr += temperature;
-            ptr += "}";
-            Serial.println(ptr);
-            client.println(ptr);
-            delay(100);
-            break;
-        }
-        if (c == '\n') {
-          // when starts reading a new line
-          blank_line = true;
-        }
-        else if (c != '\r') {
-          // when finds a character on the current line
-          blank_line = false;
-        }
+        delay(100);
+        readSensor();
+        String ptr = "";
+        ptr += "{\"distance\":";
+        ptr += distance;
+        ptr += ",\"Temperature\":";
+        ptr += temperature;
+        ptr += "}";
+        Serial.println(ptr);
+        client.println(ptr);
+        delay(100);
+        break;
       }
       else {
         Serial.println("Client NOT available, re-try");
