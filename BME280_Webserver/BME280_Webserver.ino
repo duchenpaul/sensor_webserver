@@ -108,34 +108,24 @@ void loop() {
     // bolean to locate when the http request ends
     boolean blank_line = true;
     while (client.connected()) {
-      if (client.available()) {
+      if (client.readStringUntil('>')) {
         char c = client.read();
         
-        if (c == '\n' && blank_line) {
-            getSensor();
-            String ptr = "";
-            ptr += "{\"Temperature\":";
-            ptr += temperature;
-            ptr += ",\"Humidity\":";
-            ptr += humidity;
-            ptr += ",\"Pressure\":";
-            ptr += pressure;
-            // ptr += ",\"Altitude\":";
-            // ptr += altitude;
-            ptr += "}";
-            Serial.println(ptr);
-            client.println(ptr);
-            delay(100);
-            break;
-        }
-        if (c == '\n') {
-          // when starts reading a new line
-          blank_line = true;
-        }
-        else if (c != '\r') {
-          // when finds a character on the current line
-          blank_line = false;
-        }
+        getSensor();
+        String ptr = "";
+        ptr += "{\"Temperature\":";
+        ptr += temperature;
+        ptr += ",\"Humidity\":";
+        ptr += humidity;
+        ptr += ",\"Pressure\":";
+        ptr += pressure;
+        // ptr += ",\"Altitude\":";
+        // ptr += altitude;
+        ptr += "}";
+        Serial.println(ptr);
+        client.println(ptr);
+        delay(100);
+        break;
       }
     }  
     // closing the client connection
