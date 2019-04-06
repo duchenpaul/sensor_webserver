@@ -95,7 +95,7 @@ void loop() {
         char c = client.read();
         Serial.println("Client read");
         
-        delay(100);
+        delay(10);
         readSensor();
         String ptr = "";
         ptr += "{\"distance\":";
@@ -105,7 +105,7 @@ void loop() {
         ptr += "}";
         Serial.println(ptr);
         client.println(ptr);
-        delay(100);
+        delay(10);
         break;
       }
       else {
@@ -128,7 +128,7 @@ void readSensor() {
     US100.flush(); 
     US100.write(0x55); // Read distance
 
-    delay(100);
+    delay(10);
 
     if(US100.available() >= 2)
     {
@@ -148,7 +148,7 @@ void readSensor() {
     US100.flush(); 
     US100.write(0x50); // Read temperature
 
-    delay(100);
+    delay(10);
 
     if(US100.available() >= 1)
     {
