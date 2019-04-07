@@ -3,11 +3,12 @@
 #include <DNSServer.h>            //Local DNS Server used for redirecting all requests to the configuration portal
 #include <ESP8266WebServer.h>     //Local WebServer used to serve the configuration portal
 #include <WiFiManager.h>          //https://github.com/tzapu/WiFiManager WiFi Configuration Magic
-
+#include <ArduinoJson.h>
 
 #include <SoftwareSerial.h> 
 
 #define HOSTNAME "ESP8266-OTA-"
+#define HTTP_REST_PORT 80
 
 const int US100_TX = D8;
 const int US100_RX = D7;
@@ -26,9 +27,10 @@ void configModeCallback (WiFiManager *myWiFiManager);
 void getSensor();
 
 float temperature, distance;
+String welcomeStr = "";
 
 // Web Server on port 80
-WiFiServer server(80);
+ESP8266WebServer http_rest_server(HTTP_REST_PORT);
 
 // only runs once on boot
 void setup() {
@@ -67,60 +69,20 @@ void setup() {
   Serial.println("");
   Serial.println("WiFi connected");
   
-  // Starting the web server
-  server.begin();
   
   // Printing the ESP IP address
   Serial.println(WiFi.localIP());
-  Serial.println(F("US-100 service started"));
+  config_rest_server_routing();
+  http_rest_server.begin();
+  Serial.println("HTTP REST Server Started");
 
 }
 
 
 // runs over and over again
 void loop() {
-  // Listenning for new clients
-
-  WiFiClient client = server.available();
-  
-  if (client) {
-    Serial.println("New client");
-    // bolean to locate when the http request ends
-    boolean blank_line = true;
-    while (client.connected()) {
-      Serial.println("Client connected");
-      // if (client.available()) {
-      if (client.readStringUntil('>')) {
-        Serial.println("Client available");
-        char c = client.read();
-        Serial.println("Client read");
-        
-        delay(10);
-        readSensor();
-        String ptr = "";
-        ptr += "{\"distance\":";
-        ptr += distance;
-        ptr += ",\"Temperature\":";
-        ptr += temperature;
-        ptr += "}";
-        Serial.println(ptr);
-        client.println(ptr);
-        delay(10);
-        break;
-      }
-      else {
-        Serial.println("Client NOT available, re-try");
-        
-      }
-    }  
-    // closing the client connection
-    delay(1);
-    client.stop();
-    Serial.println("Client disconnected.");
-  }
+  http_rest_server.handleClient();
 } 
-
-
 
 
 void readSensor() {
@@ -164,7 +126,43 @@ void readSensor() {
             temperature = temp;
         }
     }
+
+    Serial.println("temperature:");
+    Serial.println(temperature);
+    Serial.println("distance:");
+    Serial.println(distance);
+
+    DynamicJsonDocument jsonObj(1024);
+
+    char JSONmessageBuffer[200];
+
+    jsonObj["temperature"] = temperature;
+    jsonObj["distance"] = distance;
+    serializeJsonPretty(jsonObj, JSONmessageBuffer);
+    //serializeJsonPretty
+    Serial.println(JSONmessageBuffer);
+
+    http_rest_server.send(200, "application/json", JSONmessageBuffer);
  
+}
+
+void config_rest_server_routing() {
+    char *us100_api = "/us-100";
+    welcomeStr += "<p>Welcome to the ESP8266 Sensor Server</p>";
+    welcomeStr += "<p>";
+    welcomeStr += "API: http://";
+    welcomeStr += WiFi.localIP().toString();
+    welcomeStr += us100_api;
+    welcomeStr += "</p>";
+
+    Serial.println(welcomeStr);
+    http_rest_server.on("/", HTTP_GET, []() {
+        http_rest_server.send(200, "text/html",
+            welcomeStr);
+    });
+    http_rest_server.on("/us-100", HTTP_GET, readSensor);
+    // http_rest_server.on("/leds", HTTP_POST, post_put_leds);
+    // http_rest_server.on("/leds", HTTP_PUT, post_put_leds);
 }
 
 
