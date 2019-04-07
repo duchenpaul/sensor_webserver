@@ -18,9 +18,11 @@
 
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BME280.h>
+#include <ArduinoJson.h>
 
 #define HOSTNAME "ESP8266-OTA-"
 #define SEALEVELPRESSURE_HPA (1013.25)
+#define HTTP_REST_PORT 80
 
 Adafruit_BME280 bme; // I2C
 /*
@@ -36,13 +38,14 @@ Adafruit_BME280 bme; // I2C
 
 void configModeCallback (WiFiManager *myWiFiManager);
 void getSensor();
+void config_rest_server_routing();
 
 
 float temperature, humidity, pressure, altitude;
-
+String welcomeStr = "";
 
 // Web Server on port 80
-WiFiServer server(80);
+ESP8266WebServer http_rest_server(HTTP_REST_PORT);
 
 // only runs once on boot
 void setup() {
@@ -84,55 +87,25 @@ void setup() {
   Serial.println("");
   Serial.println("WiFi connected");
   
-  // Starting the web server
-  server.begin();
   
   // Printing the ESP IP address
   Serial.println(WiFi.localIP());
-  Serial.println(F("BME280 service started"));
 
   if (!bme.begin()) {
     Serial.println("Could not find a valid BME280 sensor, check wiring!");
     while (1);
   }
+
+  // Starting the web server
+  config_rest_server_routing();
+  http_rest_server.begin();
+  Serial.println("HTTP REST Server Started");
 }
 
 
 // runs over and over again
 void loop() {
-  // Listenning for new clients
-  WiFiClient client = server.available();
-  
-  if (client) {
-    Serial.println("New client");
-    // bolean to locate when the http request ends
-    boolean blank_line = true;
-    while (client.connected()) {
-      if (client.readStringUntil('>')) {
-        char c = client.read();
-        
-        getSensor();
-        String ptr = "";
-        ptr += "{\"Temperature\":";
-        ptr += temperature;
-        ptr += ",\"Humidity\":";
-        ptr += humidity;
-        ptr += ",\"Pressure\":";
-        ptr += pressure;
-        // ptr += ",\"Altitude\":";
-        // ptr += altitude;
-        ptr += "}";
-        Serial.println(ptr);
-        client.println(ptr);
-        delay(100);
-        break;
-      }
-    }  
-    // closing the client connection
-    delay(1);
-    client.stop();
-    Serial.println("Client disconnected.");
-  }
+    http_rest_server.handleClient();
 } 
 
 
@@ -142,7 +115,47 @@ void getSensor() {
     temperature = bme.readTemperature();
     humidity = bme.readHumidity();
     pressure = bme.readPressure() / 100.0F;
-    altitude = bme.readAltitude(SEALEVELPRESSURE_HPA); 
+    altitude = bme.readAltitude(SEALEVELPRESSURE_HPA);
+
+    Serial.println("temperature:");
+    Serial.println(temperature);
+    Serial.println("humidity:");
+    Serial.println(humidity);
+    Serial.println("pressure:");
+    Serial.println(pressure);
+
+    DynamicJsonDocument jsonObj(1024);
+
+    char JSONmessageBuffer[200];
+
+    jsonObj["temperature"] = temperature;
+    jsonObj["humidity"] = humidity;
+    jsonObj["pressure"] = pressure;
+    serializeJsonPretty(jsonObj, JSONmessageBuffer);
+    //serializeJsonPretty
+    Serial.println(JSONmessageBuffer);
+
+    http_rest_server.send(200, "application/json", JSONmessageBuffer);
+
+}
+
+void config_rest_server_routing() {
+    char *bme280_api = "/bme280";
+    welcomeStr += "<p>Welcome to the ESP8266 Sensor Server</p>";
+    welcomeStr += "<p>";
+    welcomeStr += "API: http://";
+    welcomeStr += WiFi.localIP().toString();
+    welcomeStr += bme280_api;
+    welcomeStr += "</p>";
+
+    Serial.println(welcomeStr);
+    http_rest_server.on("/", HTTP_GET, []() {
+        http_rest_server.send(200, "text/html",
+            welcomeStr);
+    });
+    http_rest_server.on(bme280_api, HTTP_GET, getSensor);
+    // http_rest_server.on("/leds", HTTP_POST, post_put_leds);
+    // http_rest_server.on("/leds", HTTP_PUT, post_put_leds);
 }
 
 
@@ -153,3 +166,4 @@ void configModeCallback (WiFiManager *myWiFiManager) {
   Serial.println(myWiFiManager->getConfigPortalSSID());
 
 }
+
