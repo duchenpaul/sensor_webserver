@@ -57,6 +57,10 @@ void setup() {
   Wire.begin(D6, D5);
   Wire.setClock(100000);
 
+  // LED
+  pinMode(LED_BUILTIN, OUTPUT);
+  digitalWrite(LED_BUILTIN, HIGH);
+
   //WiFiManager
   //Local intialization. Once its business is done, there is no need to keep it around
   WiFiManager wifiManager;
@@ -112,6 +116,8 @@ void loop() {
 
 
 void getSensor() {
+    // Active LED
+    digitalWrite(LED_BUILTIN, LOW);
     temperature = bme.readTemperature();
     humidity = bme.readHumidity();
     pressure = bme.readPressure() / 100.0F;
@@ -136,7 +142,8 @@ void getSensor() {
     Serial.println(JSONmessageBuffer);
 
     http_rest_server.send(200, "application/json", JSONmessageBuffer);
-
+    // Disable LED
+    digitalWrite(LED_BUILTIN, HIGH);
 }
 
 void config_rest_server_routing() {
@@ -166,4 +173,3 @@ void configModeCallback (WiFiManager *myWiFiManager) {
   Serial.println(myWiFiManager->getConfigPortalSSID());
 
 }
-

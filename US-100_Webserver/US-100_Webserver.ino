@@ -39,6 +39,10 @@ void setup() {
   US100.begin(9600);
   delay(10);
 
+  // LED
+  pinMode(LED_BUILTIN, OUTPUT);
+  digitalWrite(LED_BUILTIN, HIGH);
+
   //WiFiManager
   //Local intialization. Once its business is done, there is no need to keep it around
   WiFiManager wifiManager;
@@ -85,7 +89,10 @@ void loop() {
 } 
 
 
-void readSensor() {
+void getSensor() {
+    // Active LED
+    digitalWrite(LED_BUILTIN, LOW);
+    
     temperature = -99;
     distance = -99;
 
@@ -143,7 +150,8 @@ void readSensor() {
     Serial.println(JSONmessageBuffer);
 
     http_rest_server.send(200, "application/json", JSONmessageBuffer);
- 
+    // Disable LED
+    digitalWrite(LED_BUILTIN, HIGH); 
 }
 
 void config_rest_server_routing() {
