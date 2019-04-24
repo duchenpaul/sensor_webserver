@@ -13,7 +13,6 @@
 const int US100_TX = D8;
 const int US100_RX = D7;
  
-// Instancia nuevo canal serie
 SoftwareSerial US100(US100_RX, US100_TX);
 
 unsigned int MSByteDist = 0;
