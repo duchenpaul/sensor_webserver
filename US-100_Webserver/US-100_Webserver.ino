@@ -167,7 +167,7 @@ void config_rest_server_routing() {
         http_rest_server.send(200, "text/html",
             welcomeStr);
     });
-    http_rest_server.on("/us-100", HTTP_GET, readSensor);
+    http_rest_server.on("/us-100", HTTP_GET, getSensor);
     // http_rest_server.on("/leds", HTTP_POST, post_put_leds);
     // http_rest_server.on("/leds", HTTP_PUT, post_put_leds);
 }
