@@ -25,7 +25,7 @@ unsigned int mmDist = 0;
 void configModeCallback (WiFiManager *myWiFiManager);
 void getSensor();
 
-int distance;
+float distance = 0;
 String welcomeStr = "";
 
 // Web Server on port 80
@@ -97,13 +97,27 @@ void getSensor() {
     digitalWrite(LED_BUILTIN, LOW);
     
     VL53L0X_RangingMeasurementData_t measure;
+    int valid = 1;
+    int try_times = 100;
 
-    lox.rangingTest(&measure, false); // pass in 'true' to get debug data printout!
+    int n = 0;
+    while (n < try_times && valid == 1) // Try try_times to get a relative accuate value
+    {
+      n += 1;
+      lox.rangingTest(&measure, false); // pass in 'true' to get debug data printout!
 
-    if (measure.RangeStatus != 4) {  // phase failures have incorrect data
-        distance = measure.RangeMilliMeter;
-        Serial.println(measure.RangeMilliMeter);
-        delay(50);
+      if (measure.RangeStatus != 4) {  // phase failures have incorrect data
+          distance += measure.RangeMilliMeter;
+          Serial.println(measure.RangeMilliMeter);
+          delay(1);
+      } else {
+        distance = -1;
+        valid = 0;
+      }
+    }
+
+    if (valid != 0) {
+      distance = int(distance / try_times);
     }
 
     Serial.println("distance:");
