@@ -98,7 +98,7 @@ void getSensor() {
     
     VL53L0X_RangingMeasurementData_t measure;
     int valid = 1;
-    int try_times = 100;
+    int try_times = 20;
 
     int n = 0;
     while (n < try_times && valid == 1) // Try try_times to get a relative accuate value
