@@ -154,12 +154,12 @@ void getSensor() {
 }
 
 void config_rest_server_routing() {
-    char *us100_api = "/us-100";
+    char *api_string = "/us-100";
     welcomeStr += "<p>Welcome to the ESP8266 Sensor Server</p>";
     welcomeStr += "<p>";
     welcomeStr += "API: http://";
     welcomeStr += WiFi.localIP().toString();
-    welcomeStr += us100_api;
+    welcomeStr += api_string;
     welcomeStr += "</p>";
 
     Serial.println(welcomeStr);
@@ -167,7 +167,7 @@ void config_rest_server_routing() {
         http_rest_server.send(200, "text/html",
             welcomeStr);
     });
-    http_rest_server.on("/us-100", HTTP_GET, getSensor);
+    http_rest_server.on(api_string, HTTP_GET, getSensor);
     // http_rest_server.on("/leds", HTTP_POST, post_put_leds);
     // http_rest_server.on("/leds", HTTP_PUT, post_put_leds);
 }

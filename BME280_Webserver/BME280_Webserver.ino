@@ -147,12 +147,12 @@ void getSensor() {
 }
 
 void config_rest_server_routing() {
-    char *bme280_api = "/bme280";
+    char *api_string = "/bme280";
     welcomeStr += "<p>Welcome to the ESP8266 Sensor Server</p>";
     welcomeStr += "<p>";
     welcomeStr += "API: http://";
     welcomeStr += WiFi.localIP().toString();
-    welcomeStr += bme280_api;
+    welcomeStr += api_string;
     welcomeStr += "</p>";
 
     Serial.println(welcomeStr);
@@ -160,7 +160,7 @@ void config_rest_server_routing() {
         http_rest_server.send(200, "text/html",
             welcomeStr);
     });
-    http_rest_server.on(bme280_api, HTTP_GET, getSensor);
+    http_rest_server.on(api_string, HTTP_GET, getSensor);
     // http_rest_server.on("/leds", HTTP_POST, post_put_leds);
     // http_rest_server.on("/leds", HTTP_PUT, post_put_leds);
 }

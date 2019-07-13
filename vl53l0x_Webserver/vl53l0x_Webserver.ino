@@ -138,12 +138,12 @@ void getSensor() {
 }
 
 void config_rest_server_routing() {
-    char *vl53l0x_api = "/vl53l0x";
+    char *api_string = "/vl53l0x";
     welcomeStr += "<p>Welcome to the ESP8266 Sensor Server</p>";
     welcomeStr += "<p>";
     welcomeStr += "API: http://";
     welcomeStr += WiFi.localIP().toString();
-    welcomeStr += vl53l0x_api;
+    welcomeStr += api_string;
     welcomeStr += "</p>";
 
     Serial.println(welcomeStr);
@@ -151,7 +151,7 @@ void config_rest_server_routing() {
         http_rest_server.send(200, "text/html",
             welcomeStr);
     });
-    http_rest_server.on("/vl53l0x", HTTP_GET, getSensor);
+    http_rest_server.on(api_string, HTTP_GET, getSensor);
     // http_rest_server.on("/leds", HTTP_POST, post_put_leds);
     // http_rest_server.on("/leds", HTTP_PUT, post_put_leds);
 }
