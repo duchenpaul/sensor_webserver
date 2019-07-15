@@ -28,6 +28,7 @@ ESP8266WebServer http_rest_server(HTTP_REST_PORT);
 // only runs once on boot
 void setup() {
   // Initializing serial port for debugging purposes
+  pinMode(LED_BUILTIN, OUTPUT);
   Serial.begin(115200);
   delay(10);
 
