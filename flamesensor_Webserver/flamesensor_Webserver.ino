@@ -19,7 +19,6 @@ bool flameStatus = false;
 void configModeCallback (WiFiManager *myWiFiManager);
 void getSensor();
 
-float temperature, distance;
 String welcomeStr = "";
 
 // Web Server on port 80
