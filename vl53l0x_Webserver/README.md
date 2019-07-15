@@ -1,7 +1,7 @@
 # BME280_Webserver
 
 # RESTful API
-`http://<IP>//us-100`
+`http://<IP>//vl53l0x`
 
 # Dependency
 WiFiManager v0.12.0
