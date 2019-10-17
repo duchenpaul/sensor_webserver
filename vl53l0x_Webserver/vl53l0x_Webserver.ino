@@ -56,7 +56,8 @@ void setup() {
   //WiFi.begin(WIFI_SSID, WIFI_PWD);
   String hostname(HOSTNAME);
   hostname += String(ESP.getChipId(), HEX);
-  WiFi.hostname(hostname);
+  // WiFi.hostname(hostname);
+  WiFi.hostname("vl53l0x");
 
   
   // Connecting to WiFi network

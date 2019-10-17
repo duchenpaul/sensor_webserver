@@ -75,7 +75,8 @@ void setup() {
   //WiFi.begin(WIFI_SSID, WIFI_PWD);
   String hostname(HOSTNAME);
   hostname += String(ESP.getChipId(), HEX);
-  WiFi.hostname(hostname);
+  // WiFi.hostname(hostname);
+  WiFi.hostname("BME280");
 
   
   // Connecting to WiFi network

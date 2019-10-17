@@ -41,7 +41,8 @@ void setup()
     //WiFi.begin(WIFI_SSID, WIFI_PWD);
     String hostname(HOSTNAME);
     hostname += String(ESP.getChipId(), HEX);
-    WiFi.hostname(hostname);
+    // WiFi.hostname(hostname);
+    WiFi.hostname("flamesensor_client");
 
 
     // Connecting to WiFi network
