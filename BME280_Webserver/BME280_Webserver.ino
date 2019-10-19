@@ -149,11 +149,11 @@ void getSensor() {
 
 void config_rest_server_routing() {
     char *api_string = "/bme280";
+    String api_link = "http://" + WiFi.localIP().toString() + api_string;
     welcomeStr += "<p>Welcome to the ESP8266 Sensor Server</p>";
     welcomeStr += "<p>";
-    welcomeStr += "API: http://";
-    welcomeStr += WiFi.localIP().toString();
-    welcomeStr += api_string;
+    welcomeStr += "API: ";
+    welcomeStr += "<a href=\"" + api_link + "\">" + api_link + "</a>";
     welcomeStr += "</p>";
 
     Serial.println(welcomeStr);
