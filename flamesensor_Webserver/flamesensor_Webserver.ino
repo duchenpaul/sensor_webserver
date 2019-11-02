@@ -27,7 +27,7 @@ ESP8266WebServer http_rest_server(HTTP_REST_PORT);
 // only runs once on boot
 void setup() {
   // Initializing serial port for debugging purposes
-  pinMode(LED_BUILTIN, OUTPUT);
+  pinMode(D4, OUTPUT);
   Serial.begin(115200);
   delay(10);
 
@@ -79,13 +79,13 @@ void loop() {
 
 
 void getSensor() {
-    digitalWrite(LED_BUILTIN, LOW);
+    digitalWrite(D4, LOW);
     sensorStatus = digitalRead(pin);
     flameStatus = !sensorStatus;
 
     Serial.println("Sensor status:");
     Serial.println(sensorStatus);
-    Serial.println("Flame status:");
+    Serial.println("flame_status:");
     Serial.println(flameStatus);
 
 
@@ -93,14 +93,14 @@ void getSensor() {
 
     char JSONmessageBuffer[200];
 
-    jsonObj["flame status"] = flameStatus;
+    jsonObj["flame_status"] = flameStatus;
     serializeJsonPretty(jsonObj, JSONmessageBuffer);
     //serializeJsonPretty
     Serial.println(JSONmessageBuffer);
 
     http_rest_server.send(200, "application/json", JSONmessageBuffer);
     // Disable LED
-    digitalWrite(LED_BUILTIN, HIGH); 
+    digitalWrite(D4, HIGH); 
 }
 
 void config_rest_server_routing() {
