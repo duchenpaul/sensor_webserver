@@ -88,7 +88,7 @@ void loop()
             DynamicJsonDocument root(1024);
             deserializeJson(root, payload);
 
-            boolean flameStatus = root["flame status"].as<boolean>();
+            boolean flameStatus = root["flame_status"].as<boolean>();
 
             if (flameStatus) {
                 digitalWrite(LED_BUILTIN, LOW);
