@@ -62,10 +62,10 @@ void setup()
     // Printing the ESP IP address
     Serial.println(WiFi.localIP());
 
-    pinMode(LED_BUILTIN, OUTPUT);
-    digitalWrite(LED_BUILTIN, LOW);
+    pinMode(D4, OUTPUT);
+    digitalWrite(D4, LOW);
     delay(500);
-    digitalWrite(LED_BUILTIN, HIGH);
+    digitalWrite(D4, HIGH);
     // WiFi.begin(ssid, password);
 
 }
@@ -91,14 +91,15 @@ void loop()
             boolean flameStatus = root["flame_status"].as<boolean>();
 
             if (flameStatus) {
-                digitalWrite(LED_BUILTIN, LOW);
+                digitalWrite(D4, LOW);
+                delay(700);
             }
             else {
-                digitalWrite(LED_BUILTIN, HIGH);
+                digitalWrite(D4, HIGH);
                 if ( heart_beat_ind % 3 == 0 ) {
-                    digitalWrite(LED_BUILTIN, LOW);
+                    digitalWrite(D4, LOW);
                     delay(200);
-                    digitalWrite(LED_BUILTIN, HIGH);
+                    digitalWrite(D4, HIGH);
                     delay(500);
                 }
             }
@@ -107,7 +108,7 @@ void loop()
         }
         else {
             Serial.println("Sensor not found.");
-            digitalWrite(LED_BUILTIN, HIGH);
+            digitalWrite(D4, HIGH);
         }
         http.end(); //Close connection
     }
