@@ -1,0 +1,44 @@
+#include <ESP8266WiFi.h>                    //ESP8266 Core WiFi Library (you most likely already have this in your sketch)
+
+uint8_t LEDpinR = D8;
+uint8_t LEDpinG = D6;
+uint8_t LEDpinB = D7;
+
+ 
+/* By default PWM frequency is 1000Hz and we are using same 
+   for this application hence no need to set */
+ 
+void setup(){
+  Serial.begin(115200);
+  analogWrite(LEDpinR, 512);  /* set initial 50% duty cycle */
+  analogWrite(LEDpinG, 0);  /* set initial 50% duty cycle */
+  analogWrite(LEDpinB, 0);  /* set initial 50% duty cycle */
+  Serial.print("D1"); Serial.println(D1);
+  Serial.print("D2"); Serial.println(D2);
+  Serial.print("D3"); Serial.println(D3);
+  Serial.print("D4"); Serial.println(D4);
+  Serial.print("D5"); Serial.println(D5);
+  Serial.print("D6"); Serial.println(D6);
+  Serial.print("D7"); Serial.println(D7);
+  Serial.print("D8"); Serial.println(D8);
+  Serial.print("D9"); Serial.println(D9);
+  Serial.print("D10"); Serial.println(D10);
+  /* 
+  // Serial.print("D11"); Serial.println(D11);
+  // Serial.print("D12"); Serial.println(D12);
+  // Serial.print("D13"); Serial.println(D13);
+  // Serial.print("D14"); Serial.println(D14);
+  // Serial.print("D15"); Serial.println(D15);
+  // Serial.print("D16"); Serial.println(D16);
+  */
+}
+ 
+void loop(){
+  uint16_t dutycycle =  analogRead(A0); /* read continuous POT and set PWM duty cycle according */
+  if(dutycycle > 1023) dutycycle = 1023;/* limit dutycycle to 1023 if POT read cross it */
+  // Serial.print("Duty Cycle: ");  Serial.println(dutycycle);
+  analogWrite(LEDpinR, dutycycle);
+  // analogWrite(LEDpinG, 1023 - dutycycle);
+  // analogWrite(LEDpinB, dutycycle);
+  delay(100);
+}
